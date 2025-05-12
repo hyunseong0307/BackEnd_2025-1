@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Articles</title>
+    <title>게시글 목록</title>
 </head>
 <body>
-<p>article을 보여주기 위한 페이지</p>
+<h1>게시글 목록</h1>
+
+<div th:each="article : ${articles}">
+    <h2 th:text="'제목: ' + ${article.title}">제목</h2>
+    <p th:text="'내용: ' + ${article.content}">내용</p>
+    <p th:text="'작성자: ' + ${article.authorId} + '번 회원'">작성자</p>
+    <p th:text="'게시판: ' + ${article.boardId} + '번 게시판'">게시판</p>
+    <p th:text="'작성일: ' + ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
+    <p th:text="'수정일: ' + ${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">수정일</p>
+    <hr/>
+</div>
 </body>
 </html>
