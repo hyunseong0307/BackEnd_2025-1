@@ -16,12 +16,45 @@ public class ArticleController {
     private final Map<Integer, Article> articles = new HashMap<>();
     private Integer articleId = 1;
 
-    @PostMapping("/article")
+    @GetMapping("/posts")
+    public String showArticlesView( @RequestParam(name = "boardId", required = false) Integer boardId, Model model) {
+
+        List<Article> allArticles = new ArrayList<>(articles.values());
+        allArticles.sort(Comparator.comparing(Article::getId));
+        Map<String, Object> boardModelData = new HashMap<>();
+
+        if (boardId != null) {
+            boardModelData.put("id", boardId);
+            boardModelData.put("name", "게시판 " + boardId);
+            model.addAttribute("boardId", boardId);
+        } else {
+            boardModelData.put("name", "전체");
+        }
+
+        model.addAttribute("board", boardModelData);
+        model.addAttribute("articles", allArticles);
+
+        return "boards";
+    }
+
+    @GetMapping("/articles")
+    @ResponseBody
+    public ResponseEntity<List<Article>> getArticlesByBoardId(
+            @RequestParam(name = "boardId", required = false) Integer boardId) { // boardId 파라미터는 받지만, 필터링에 사용되지 않음
+
+        List<Article> allArticles = new ArrayList<>(articles.values());
+
+        allArticles.sort(Comparator.comparing(Article::getId));
+
+        return ResponseEntity.ok(allArticles);
+    }
+
+    @PostMapping("/articles")
     @ResponseBody
     public ResponseEntity<?> createArticle(@RequestBody Map<String, String> body) {
         try {
-            Integer authorId = Integer.parseInt(body.get("authorId"));
-            Integer boardId = Integer.parseInt(body.get("boardId"));
+            Integer authorId = Integer.parseInt(body.get("author_id"));
+            Integer boardId = Integer.parseInt(body.get("board_id"));
             String title = body.get("title");
             String content = body.get("content");
 
@@ -45,7 +78,7 @@ public class ArticleController {
         return ResponseEntity.ok(new ArrayList<>(articles.values()));
     }
 
-    @GetMapping("/article/{id}")
+    @GetMapping("/articles/{id}")
     @ResponseBody
     public ResponseEntity<?> getArticle(@PathVariable Integer id) {
         Article article = articles.get(id);
@@ -55,7 +88,7 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    @PutMapping("/article/{id}")
+    @PutMapping("/articles/{id}")
     @ResponseBody
     public ResponseEntity<?> updateArticle(@PathVariable Integer id, @RequestBody Map<String, String> body) {
         Article article = articles.get(id);
@@ -75,7 +108,7 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    @DeleteMapping("/article/{id}")
+    @DeleteMapping("/articles/{id}")
     @ResponseBody
     public ResponseEntity<?> deleteArticle(@PathVariable Integer id) {
         if (!articles.containsKey(id)) {
@@ -83,11 +116,5 @@ public class ArticleController {
         }
         articles.remove(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @GetMapping("/posts")
-    public String showAllArticlesView(Model model) {
-        model.addAttribute("articles", new ArrayList<>(articles.values()));
-        return "articles"; 
     }
 }

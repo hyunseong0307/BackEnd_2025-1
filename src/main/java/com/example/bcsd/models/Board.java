@@ -1,27 +1,23 @@
 package com.example.bcsd.models;
 
 public class Board {
-    private Integer id;
-    private String name;
+    private final Long id;
+    private final String title;
 
-    public Board(Integer id, String name) {
+    public Board(Long id, String title) {
         this.id = id;
-        this.name = name;
+        this.title = title;
     }
 
-    public Integer getId() {
+    public String getTitle() {
+        return title;
+    }
+
+    public Board changeTitle(String title) {
+        return new Board(id, title);
+    }
+
+    public Long getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
