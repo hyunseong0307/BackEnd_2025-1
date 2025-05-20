@@ -5,9 +5,9 @@ public class Board {
     private Long id;
     private String name;
 
-    public Board(Long id, String title) {
+    public Board(Long id, String name) {
         this.id = id;
-        this.name = title;
+        this.name = name;
     }
 
     public Long getId() {
@@ -18,11 +18,11 @@ public class Board {
         this.id = id;
     }
 
-    public String getTitle() {
+    public String getName() {
         return name;
     }
 
-    public void setTitle(String title) {
-        this.name = title;
+    public void setName(String name) {
+        this.name = name;
     }
 }

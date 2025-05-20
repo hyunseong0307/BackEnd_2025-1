@@ -14,13 +14,10 @@ public class boardDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public String boardName(int boardId){
-        String sql = "select name from board where id = ?";
+    public String getboardName(int boardId){
+        String sql = "SELECT name FROM board WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, String.class, boardId);
     }
 
-    public List<Integer> articlesOnBoardId(int boardId){
-        String sql = "select id from article where boardId = ?";
-        return jdbcTemplate.queryForList(sql, Integer.class, boardId);
-    }
+
 }
