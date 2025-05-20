@@ -1,57 +1,93 @@
 package com.example.bcsd.models;
 
-public class Article {
-    private final Long id;
-    private final String title;
-    private final Long authorId;
-    private final Long boardId;
-    private final String createdDate;
-    private final String content;
-    private final String modifiedDate;
+import java.time.LocalDateTime;
 
-    public Article(Long id, String title, Long authorId, Long boardId, String createdAt, String content, String modifiedDate) {
-        this.id = id;
-        this.title = title;
-        this.authorId = authorId;
-        this.boardId = boardId;
-        this.createdDate = createdAt;
-        this.content = content;
-        this.modifiedDate = modifiedDate;
+public class Article {
+    private Integer id;
+    private Integer authorId;
+    private Integer boardId;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public Article() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public Article(Integer authorId, Integer boardId, String title, String content) {
+        this.authorId = authorId;
+        this.boardId = boardId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public Article(Integer id, Integer authorId, Integer boardId, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.authorId = authorId;
+        this.boardId = boardId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
+
+    public Integer getBoardId() {
+        return boardId;
+    }
+
+    public void setBoardId(Integer boardId) {
+        this.boardId = boardId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Article changeArticle(String title, String content, String modifiedDate) {
-        return new Article(id, title, authorId, boardId, createdDate, content, modifiedDate);
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public Long getBoardId() {
-        return boardId;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public String getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public Article updateModificationDate(String date) {
-        return new Article(id, title, authorId, boardId, createdDate, content, date);
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
         return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

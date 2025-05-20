@@ -1,11 +1,13 @@
-package com.example.bcsd.models;
+package com.example.bcsd.dtos;
 
-public class Board {
-
+public class boardDto {
     private Long id;
     private String name;
 
-    public Board(Long id, String title) {
+    public boardDto() {
+    }
+
+    public boardDto(Long id, String title) {
         this.id = id;
         this.name = title;
     }
