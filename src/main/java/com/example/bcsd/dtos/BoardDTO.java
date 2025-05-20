@@ -1,15 +1,15 @@
 package com.example.bcsd.dtos;
 
-public class boardDto {
+public class BoardDTO {
     private Long id;
     private String name;
 
-    public boardDto() {
+    public BoardDTO() {
     }
 
-    public boardDto(Long id, String title) {
+    public BoardDTO(Long id, String name) {
         this.id = id;
-        this.name = title;
+        this.name = name;
     }
 
     public Long getId() {
@@ -20,11 +20,11 @@ public class boardDto {
         this.id = id;
     }
 
-    public String getTitle() {
+    public String getName() {
         return name;
     }
 
-    public void setTitle(String title) {
-        this.name = title;
+    public void setName(String name) {
+        this.name = name;
     }
 }
