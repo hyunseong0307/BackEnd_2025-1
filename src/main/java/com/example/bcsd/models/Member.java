@@ -14,6 +14,10 @@ public class Member {
         this.password = password;
     }
 
+    public Member() {
+
+    }
+
     public int getId() {
         return id;
     }
