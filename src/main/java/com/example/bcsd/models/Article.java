@@ -3,9 +3,9 @@ package com.example.bcsd.models;
 import java.time.LocalDateTime;
 
 public class Article {
-    private Integer id;
-    private Integer authorId;
-    private Integer boardId;
+    private int id;
+    private int authorId;
+    private int boardId;
     private String title;
     private String content;
     private LocalDateTime createdAt;
@@ -35,7 +35,10 @@ public class Article {
         this.updatedAt = updatedAt;
     }
 
-    public Integer getId() {
+    public Article(int id, String title) {
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -43,19 +46,19 @@ public class Article {
         this.id = id;
     }
 
-    public Integer getAuthorId() {
+    public int getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(Integer authorId) {
+    public void setAuthorId(int authorId) {
         this.authorId = authorId;
     }
 
-    public Integer getBoardId() {
+    public int getBoardId() {
         return boardId;
     }
 
-    public void setBoardId(Integer boardId) {
+    public void setBoardId(int boardId) {
         this.boardId = boardId;
     }
 
