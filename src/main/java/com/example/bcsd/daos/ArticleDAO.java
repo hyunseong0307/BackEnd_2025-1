@@ -40,6 +40,12 @@ public class ArticleDAO {
         jdbcTemplate.update(sql, id);
     }
 
+    public int countByAuthorId(int authorId) {
+        String sql = "SELECT COUNT(*) FROM article WHERE author_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, authorId);
+        return (count != null) ? count : 0;
+    }
+
     private RowMapper<Article> articleRowMapper() {
         return (rs, rowNum) -> {
             Article dto = new Article();

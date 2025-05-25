@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberDAO {
@@ -53,5 +54,14 @@ public class MemberDAO {
     public void deleteMember(int id) {
         String sql = "DELETE FROM Member WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        String sql = "SELECT * FROM Member WHERE email = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, memberRowMapper(), email));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

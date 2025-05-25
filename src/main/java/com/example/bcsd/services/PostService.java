@@ -2,6 +2,7 @@ package com.example.bcsd.services;
 
 import com.example.bcsd.daos.ArticleDAO;
 import com.example.bcsd.daos.BoardDAO;
+import com.example.bcsd.daos.MemberDAO;
 import com.example.bcsd.exceptions.InvalidRequestException;
 import com.example.bcsd.exceptions.ResourceNotFoundException;
 import com.example.bcsd.models.Article;
@@ -15,10 +16,12 @@ import java.util.List;
 public class PostService {
     private final ArticleDAO articleDao;
     private final BoardDAO boardDao;
+    private final MemberDAO memberDao;
 
-    public PostService( ArticleDAO articleDao, BoardDAO boardDao) {
+    public PostService(ArticleDAO articleDao, BoardDAO boardDao, MemberDAO memberDao) {
         this.articleDao = articleDao;
         this.boardDao = boardDao;
+        this.memberDao = memberDao;
     }
 
     @Transactional(readOnly = true)
@@ -56,11 +59,11 @@ public class PostService {
             throw new InvalidRequestException("게시물 생성 요청 시 필수 값이 누락되었습니다. (authorId, boardId, title, content)");
         }
 
-//         try { //멤버가 있는지 없는지 검사함. 아직 작성전
-//             memberDao.findById(article.getAuthorId());
-//         } catch (EmptyResultDataAccessException e) {
-//             throw new InvalidRequestException("ID가 " + article.getAuthorId() + "인 사용자를 찾을 수 없습니다.");
-//         }
+         try { //멤버가 있는지 없는지 검사함. 아직 작성
+             memberDao.findById(article.getAuthorId());
+         } catch (EmptyResultDataAccessException e) {
+             throw new InvalidRequestException("ID가 " + article.getAuthorId() + "인 사용자를 찾을 수 없습니다.");
+         }
 
         try {
             boardDao.findNameById(article.getBoardId());
@@ -73,7 +76,7 @@ public class PostService {
 
     @Transactional
     public void updateArticle(int id, Article article) {
-        Article existingArticle = getArticleById(id);
+        getArticleById(id); //없으면 예외처리
         if (article.getBoardId() != 0) { // boardId가 업데이트 요청에 포함된 경우에만 확인
             try {
                 boardDao.findNameById(article.getBoardId());
