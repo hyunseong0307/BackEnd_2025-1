@@ -1,7 +1,10 @@
 package com.example.bcsd.models;
 
+import jakarta.persistence.Entity;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class Article {
     private int id;
     private int authorId;

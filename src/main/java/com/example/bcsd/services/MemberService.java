@@ -2,8 +2,6 @@ package com.example.bcsd.services;
 
 import com.example.bcsd.daos.ArticleDAO;
 import com.example.bcsd.daos.MemberDAO;
-// (향후 과제 기능 구현 시 필요) 게시물 존재 여부 확인을 위해 ArticleDAO 또는 관련 서비스 필요
-// import com.example.bcsd.daos.ArticleDAO;
 import com.example.bcsd.exceptions.DataConflictException;
 import com.example.bcsd.exceptions.InvalidRequestException;
 import com.example.bcsd.exceptions.ResourceNotFoundException;
@@ -87,7 +85,7 @@ public class MemberService {
             existingMember.setPassword(memberUpdateData.getPassword());
         }
 
-        memberDao.updateMember(existingMember);
+        memberDao.update(existingMember);
     }
 
     @Transactional
@@ -97,6 +95,6 @@ public class MemberService {
         if (articleDao.countByAuthorId(id) > 0) {
             throw new InvalidRequestException("ID가 " + id + "인 사용자는 작성한 게시물이 있어 삭제할 수 없습니다.");
         }
-        memberDao.deleteMember(id);
+        memberDao.delete(id);
     }
 }

@@ -1,5 +1,8 @@
 package com.example.bcsd.models;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Board {
 
     private int id;
