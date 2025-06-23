@@ -1,11 +1,13 @@
 package com.example.bcsd.services;
 
-import com.example.bcsd.daos.ArticleDAO;
-import com.example.bcsd.daos.BoardDAO;
-import com.example.bcsd.daos.MemberDAO;
 import com.example.bcsd.exceptions.InvalidRequestException;
 import com.example.bcsd.exceptions.ResourceNotFoundException;
 import com.example.bcsd.models.Article;
+import com.example.bcsd.models.Board;
+import com.example.bcsd.models.Member;
+import com.example.bcsd.repositories.ArticleRepository;
+import com.example.bcsd.repositories.BoardRepository;
+import com.example.bcsd.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,79 +15,87 @@ import java.util.List;
 
 @Service
 public class PostService {
-    private final ArticleDAO articleDao;
-    private final BoardDAO boardDao;
-    private final MemberDAO memberDao;
+    private final ArticleRepository articleRepository;
+    private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
-    public PostService(ArticleDAO articleDao, BoardDAO boardDao, MemberDAO memberDao) {
-        this.articleDao = articleDao;
-        this.boardDao = boardDao;
-        this.memberDao = memberDao;
+    public PostService(ArticleRepository articleRepository, BoardRepository boardRepository, MemberRepository memberRepository) {
+        this.articleRepository = articleRepository;
+        this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Article> getArticlesByBoard(int boardId) {
-        boardDao.findNameById(boardId)
-                .orElseThrow(() -> new ResourceNotFoundException("ID가 " + boardId + "인 게시판을 찾을 수 없습니다."));
-        return articleDao.findByBoardId(boardId);
+        if (!boardRepository.existsById(boardId)) {
+            throw new ResourceNotFoundException("ID가 " + boardId + "인 게시판을 찾을 수 없습니다.");
+        }
+        return articleRepository.findByBoardId(boardId);
     }
 
     @Transactional(readOnly = true)
     public String getBoardName(int boardId) {
-        return boardDao.findNameById(boardId)
+        return boardRepository.findById(boardId)
+                .map(Board::getName)
                 .orElseThrow(() -> new ResourceNotFoundException("ID가 " + boardId + "인 게시판을 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)
     public Article getArticleById(int id) {
-        Article article = articleDao.findById(id);
-        if (article == null) {
-            throw new ResourceNotFoundException("ID가 " + id + "인 게시물을 찾을 수 없습니다.");
-        }
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ID가 " + id + "인 게시물을 찾을 수 없습니다."));
         return article;
     }
 
     @Transactional
     public void createArticle(Article article) {
-        if (article.getAuthorId() == 0 || article.getBoardId() == 0 ||
+        if (article.getAuthor() == null || article.getAuthor().getId() == 0 ||
+                article.getBoard() == null || article.getBoard().getId() == 0 ||
                 article.getTitle() == null || article.getTitle().isBlank() ||
                 article.getContent() == null || article.getContent().isBlank()) {
             throw new InvalidRequestException("게시물 생성 요청 시 필수 값이 누락되었습니다. (authorId, boardId, title, content)");
         }
 
-        if (memberDao.findById(article.getAuthorId()) == null) {
-            throw new InvalidRequestException("ID가 " + article.getAuthorId() + "인 사용자를 찾을 수 없습니다.");
-        }
+        Member author = memberRepository.findById(article.getAuthor().getId())
+                .orElseThrow(() -> new InvalidRequestException("ID가 " + article.getAuthor().getId() + "인 사용자를 찾을 수 없습니다."));
 
-        boardDao.findNameById(article.getBoardId())
-                .orElseThrow(() -> new InvalidRequestException("ID가 " + article.getBoardId() + "인 게시판을 찾을 수 없습니다."));
+        Board board = boardRepository.findById(article.getBoard().getId())
+                .orElseThrow(() -> new InvalidRequestException("ID가 " + article.getBoard().getId() + "인 게시판을 찾을 수 없습니다."));
 
-        articleDao.insert(article);
+        article.setAuthor(author);
+
+        board.addArticle(article);
+        boardRepository.save(board);
     }
 
     @Transactional
-    public void updateArticle(int id, Article article) {
-        getArticleById(id); // 존재 확인
+    public void updateArticle(int id, Article articleUpdateData) {
+        Article existingArticle = getArticleById(id);
 
-        if (article.getBoardId() != 0) {
-            boardDao.findNameById(article.getBoardId())
-                    .orElseThrow(() -> new InvalidRequestException("ID가 " + article.getBoardId() + "인 게시판을 찾을 수 없습니다."));
+        if (articleUpdateData.getTitle() != null) {
+            if (articleUpdateData.getTitle().isBlank()) {
+                throw new InvalidRequestException("게시물 제목은 비워둘 수 없습니다.");
+            }
+            existingArticle.setTitle(articleUpdateData.getTitle());
         }
 
-        if (article.getTitle() != null && article.getTitle().isBlank()) {
-            throw new InvalidRequestException("게시물 제목은 비워둘 수 없습니다.");
+        if (articleUpdateData.getContent() != null) {
+            if (articleUpdateData.getContent().isBlank()) {
+                throw new InvalidRequestException("게시물 내용은 비워둘 수 없습니다.");
+            }
+            existingArticle.setContent(articleUpdateData.getContent());
         }
-
-        if (article.getContent() != null && article.getContent().isBlank()) {
-            throw new InvalidRequestException("게시물 내용은 비워둘 수 없습니다.");
-        }
-
-        articleDao.update(id, article);
+        existingArticle.setUpdatedAt(java.time.LocalDateTime.now());
     }
 
     @Transactional
     public void deleteArticle(int id) {
-        getArticleById(id); // 존재 확인
-        articleDao.delete(id);
+        Article article = getArticleById(id);
+        Board board = article.getBoard();
+        if (board != null) {
+            board.getArticles().remove(article);
+        } else {
+            articleRepository.delete(article);
+        }
     }
 }

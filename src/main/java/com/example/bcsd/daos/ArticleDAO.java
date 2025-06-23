@@ -1,4 +1,4 @@
-package com.example.bcsd.daos;
+/*package com.example.bcsd.daos;
 
 import com.example.bcsd.models.Article;
 import org.springframework.stereotype.Repository;
@@ -51,3 +51,4 @@ public class ArticleDAO {
         return count.intValue();
     }
 }
+*/

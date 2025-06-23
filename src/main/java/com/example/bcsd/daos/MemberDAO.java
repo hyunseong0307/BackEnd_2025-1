@@ -1,3 +1,4 @@
+/*
 package com.example.bcsd.daos;
 
 import com.example.bcsd.models.Member;
@@ -47,3 +48,4 @@ public class MemberDAO {
         return result.stream().findFirst();
     }
 }
+ */

@@ -1,3 +1,4 @@
+/*
 package com.example.bcsd.daos;
 
 
@@ -26,3 +27,4 @@ public class BoardDAO {
         return names.stream().findFirst();
     }
 }
+*/
