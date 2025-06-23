@@ -1,12 +1,20 @@
 package com.example.bcsd.models;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+
 public class Board {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Article> articles = new ArrayList<>();
     public Board() {
 
     }
@@ -30,5 +38,13 @@ public class Board {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 }
