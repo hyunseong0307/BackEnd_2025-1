@@ -1,14 +1,23 @@
 package com.example.bcsd.models;
 
-import jakarta.persistence.Entity;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 public class Article {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int authorId;
-    private int boardId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private Member author;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
+
     private String title;
     private String content;
     private LocalDateTime createdAt;
@@ -19,50 +28,28 @@ public class Article {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Article(Integer authorId, Integer boardId, String title, String content) {
-        this.authorId = authorId;
-        this.boardId = boardId;
-        this.title = title;
-        this.content = content;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public Article(Integer id, Integer authorId, Integer boardId, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.authorId = authorId;
-        this.boardId = boardId;
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Article(int id, String title) {
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int getAuthorId() {
-        return authorId;
+    public Member getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Member author) {
+        this.author = author;
     }
 
-    public int getBoardId() {
-        return boardId;
+    public Board getBoard() {
+        return board;
     }
 
-    public void setBoardId(int boardId) {
-        this.boardId = boardId;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public String getTitle() {
