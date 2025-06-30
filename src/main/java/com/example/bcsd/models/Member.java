@@ -11,6 +11,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String account;
     private String name;
     private String email;
     private String password;
@@ -18,8 +19,9 @@ public class Member {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Article> articles = new ArrayList<>();
 
-    public Member(int id, String name, String email, String password) {
+    public Member(int id, String account, String name, String email, String password) {
         this.id = id;
+        this.account = account;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -27,6 +29,14 @@ public class Member {
 
     public Member() {
 
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public int getId() {

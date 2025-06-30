@@ -8,4 +8,6 @@ public class SignupDto {
     private String account;
     private String password;
     private String confirmPassword;
+    private String email;
+    private String name;
 }
